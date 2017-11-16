@@ -13,8 +13,13 @@ close_values = data['Close']
 
 # checking stationarity of the time series data
 original = plt.plot(close_values, color='blue', label='Original')
-rolmean = pd.rolling_mean(close_values, window=50)
-mean = plt.plot(rolmean, color='red', label='Moving Average')
+moving_avg = pd.rolling_mean(close_values, window=50)
+mean = plt.plot(moving_avg, color='red', label='Moving Average')
 plt.legend(loc='best')
 plt.title('Moving Average vs Original values over time')
+plt.show()
+
+# seasonality stuff (differencing the model)
+data_diff = abs(moving_avg - moving_avg.shift())
+plt.plot(data_diff)
 plt.show()
