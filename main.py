@@ -6,22 +6,19 @@ rcParams['figure.figsize'] = 15, 6
 
 data = pd.read_csv('bitcoin_price.csv')
 data = data.dropna()
-data = data.set_index(data['Date'])
-data.index = data.index.to_datetime()
 print("Length of data =", len(data))
-close_values = data['Close']
+training_data = data.head(1200)
+test_data = data.tail(455)
+training_data = training_data.set_index(['Date'])
+training_data.index = training_data.index.to_datetime()
+print("Length of training data = {0} and test data = {1}".format(len(training_data),len(test_data)))
+alpha_vals = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]
 
 # checking stationarity of the time series data
-original = plt.plot(close_values, color='blue', label='Original')
-moving_avg = pd.rolling_mean(close_values, window=50)
-plt.plot(moving_avg, color='red', label='Moving Average')
-ses = pd.ewma(close_values, halflife=12)
-plt.plot(ses, color='black', label='Exponential Smoothing')
-plt.legend(loc='best')
-plt.title('Moving Average vs Original values over time')
-plt.show()
-
-# seasonality stuff (differencing the model)
-data_diff = abs(moving_avg - moving_avg.shift())
-plt.plot(data_diff)
-#plt.show()
+for alpha in alpha_vals:
+    plt.plot(training_data['Close'], color='blue', label='Original')
+    ses = pd.ewma(training_data['Close'], com = 1/alpha-1)
+    plt.plot(ses, color='red', label='Exponential Smoothing')
+    plt.legend(loc='best')
+    plt.title('Exponential Smoothing with alpha = {0} vs Original values over time'.format(alpha))
+    plt.show()
