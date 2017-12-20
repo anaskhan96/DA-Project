@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib.pylab import rcParams
 import pandas as pd
 from datetime import datetime
-#rcParams['figure.figsize'] = 15, 6
+rcParams['figure.figsize'] = 10, 10
 
 data = pd.read_csv('bitcoin_price.csv')
 data = data.dropna()
@@ -22,5 +22,9 @@ for alpha in alpha_vals:
     plt.plot(ses, color='red', label='Exponential Smoothing')
     plt.legend(loc='best')
     plt.title('Exponential Smoothing with alpha = {0} vs Original values over time'.format(alpha))
+    plt.xlabel('Timestamp')
+    plt.ylabel('Price (USD)')
+    plt.gcf().autofmt_xdate()
+    plt.savefig("ses{0}.png".format(alpha))
     plt.show()
     print("Predicted value for next day: ", (ses.tail(1) + alpha * (data.tail(1)['Close'] - ses.tail(1))))
